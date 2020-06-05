@@ -27,18 +27,19 @@ attr_reader :id
     DB[:conn].execute(sql)
   end
 
-  def self.save(name,grade)
+  def save
    sql = <<-SQL
-    INSERT INTO student (grade,name) VALUES (?,?)
-    DB[:conn].execute(sql, self.name, self.grade)
+    INSERT INTO students (name,grade) VALUES (?,?)
     SQL
-    
-    
+    DB[:conn].execute(sql, self.name, self.grade)
+    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM student") [0][0]
   end
 
+  def self.create(grade:, name:)
+    name = Student.new(name, grade)
+    name.save 
+    name 
 
-
-  def self.create
   end
 
 
